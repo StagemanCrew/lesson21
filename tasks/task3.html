@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css?family=Gabriela:regular" rel="stylesheet" />
+    <style>
+        body {
+            background-color: rgb(92, 92, 92);
+            font-family: 'Gabriela';
+        }
+    </style>
+    <title>task-3</title>
+</head>
+<body>
+    <h5>
+        Розробити Класи: <br>
+        House <br>
+        --- властивості --- <br>
+            •	Координата Х
+            •	Координата У
+            •	шлях до зображення
+            •	інтервал оновлення <br>
+        --- методи --- <br>
+            •	генерування елемента розмітки
+            •	оновлення через вказаний інтервал (збільшення або зменшення масштабу (об’єкт не рухається)) <br>
+        Dog <br>
+        --- властивості --- <br>
+            •	Координата Х
+            •	Координата У
+            •	шлях до зображення
+            •	інтервал оновлення <br>
+        --- методи --- <br>
+            •	генерування елемента розмітки
+            •	оновлення через вказаний інтервал (випадкове зміщення по горизонталі (зміна координати Х)) <br>
+        Bird <br>
+        --- властивості --- <br>
+            •	Координата Х
+            •	Координата У
+            •	шлях до зображення
+            •	інтервал оновлення <br>
+        --- методи --- <br>
+            •	генерування елемента розмітки
+            •	оновлення через вказаний інтервал (випадкове переміщення у довільному напрямку) <br>
+        Подумайте яким має бути спільний клас предок.
+    </h5>
+
+    <script>
+
+        // Спільний клас предок для всіх об'єктів
+        class Animal {
+            constructor(x, y, imagePath, updateInterval) {
+                this.x = x
+                this.y = y
+                this.imagePath = imagePath
+                this.updateInterval = updateInterval
+                this.element = null
+            }
+
+            generateMarkup() {
+                return `<div id="${this.constructor.name}" style="position: absolute; left: ${this.x}px; top: ${this.y}px; filter: drop-shadow(-1px 1px 0px yellow);"><img id="${this.constructor.name}-img" src="${this.imagePath}" alt="" width="100">`
+            }
+
+            update() {
+                // Метод оновлення
+            }
+        }
+
+        // Клас House
+        class House extends Animal {
+            constructor(x, y, imagePath, updateInterval) {
+                super(x, y, imagePath, updateInterval)
+            }
+
+            update() {
+                // Змінюємо масштаб картинки
+                const scale = Math.random() * 0.5 + 0.5; // Генеруємо випадковий масштаб (від 0.5 до 1)
+                this.element.style.transform = `scale(${scale})`
+            }
+        }
+
+        // Клас Dog
+        class Dog extends Animal {
+            constructor(x, y, imagePath, updateInterval) {
+                super(x, y, imagePath, updateInterval)
+            }
+
+            update() {
+                // Випадково зміщуємо по горизонталі (зміна координати X)
+                this.x += Math.floor(Math.random() * 100) - 50
+
+                // Оновлюємо координати об'єкта на сторінці
+                this.element.style.left = `${this.x}px`
+            }
+        }
+
+        // Клас Bird
+        class Bird extends Animal {
+            constructor(x, y, imagePath, updateInterval) {
+                super(x, y, imagePath, updateInterval)
+            }
+
+            update() {
+                // Випадково переміщуємо у довільному напрямку
+                this.x += Math.floor(Math.random() * 100) - 50
+                this.y += Math.floor(Math.random() * 100) - 50
+
+                // Оновлюємо координати об'єкта на сторінці
+                this.element.style.left = `${this.x}px`
+                this.element.style.top = `${this.y}px`
+            }
+        }
+
+        // Функція для створення DOM-елемента з рядка HTML
+        function createElementFromHTML(htmlString) {
+            const div = document.createElement('div')
+            div.innerHTML = htmlString.trim()
+            return div.firstChild
+        }
+
+        // Функція для оновлення сторінки кожні 3 секунди
+        function updatePage() {
+            const screenWidth = window.innerWidth // Ширина екрану користувача
+            const screenHeight = window.innerHeight // Висота екрану користувача
+            const house = new House(100, 100, "../img/house.png", 1000)
+            const dog = new Dog(200, 200, "../img/dog.png", 500)
+            const bird = new Bird(300, 300, "../img/bird.png", 750)
+
+            // Очищаємо попередні об'єкти на сторінці
+            document.body.innerHTML = ''
+
+            // Додаємо об'єкти на сторінку окремо
+            document.body.appendChild(createElementFromHTML(house.generateMarkup()))
+            document.body.appendChild(createElementFromHTML(dog.generateMarkup()))
+            document.body.appendChild(createElementFromHTML(bird.generateMarkup()))
+
+            // Зберігаємо посилання на елементи об'єктів
+            house.element = document.querySelector(`#${house.constructor.name}`)
+            dog.element = document.querySelector(`#${dog.constructor.name}`)
+            bird.element = document.querySelector(`#${bird.constructor.name}`)
+
+            setInterval(() => {
+                house.update()
+                dog.update()
+                bird.update()
+
+                // Перевіряємо, чи об'єкт не виходить за межі екрану
+                if (dog.x < 0) {
+                    dog.x = 0
+                }
+                if (dog.y < 0) {
+                    dog.y = 0
+                }
+                if (dog.x > screenWidth - 100) {
+                    dog.x = screenWidth - 100
+                }
+                if (dog.y > screenHeight - 100) {
+                    dog.y = screenHeight - 100
+                }
+
+                if (bird.x < 0) {
+                    bird.x = 0
+                }
+                if (bird.y < 0) {
+                    bird.y = 0
+                }
+                if (bird.x > screenWidth - 100) {
+                    bird.x = screenWidth - 100
+                }
+                if (bird.y > screenHeight - 100) {
+                    bird.y = screenHeight - 100
+                }
+
+                // Оновлюємо координати об'єктів на сторінці
+                dog.element.style.left = `${dog.x}px`
+                dog.element.style.top = `${dog.y}px`
+                bird.element.style.left = `${bird.x}px`
+                bird.element.style.top = `${bird.y}px`
+            }, 3000)
+        }
+
+        // Викликаємо функцію для оновлення сторінки
+        updatePage()
+
+    </script>
+</body>
+</html>

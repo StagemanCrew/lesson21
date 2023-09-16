@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css?family=Gabriela:regular" rel="stylesheet" />
+    <style>
+        body{
+            font-family: 'Gabriela';
+        }
+        h3{
+            filter: drop-shadow(-1px 1px 0px gold);
+        }
+        span{
+            color: gold;
+            filter: drop-shadow(-1px 1px 0px black);
+        }
+    </style>
+    <title>task-1</title>
+</head>
+<body>
+    <h4>
+        Створити клас Client. <br>
+        Властивості: ID <br>
+                    ПІБ <br>
+                    Кількість грошей на рахунку <br>
+        Методи: Додавання грошей <br>
+                Зняття грошей <br>
+                ToString <br>
+        На основі цього класу створити клас GoldenClient.
+        Властивості: ID <br>
+                    ПІБ <br>
+                    Кількість грошей на рахунку <br>
+                    Ліміт кредитних коштів <br>
+                    Відсоток за використання кредитних коштів <br>
+        Методи: Додавання грошей <br>
+                Зняття грошей <br>
+                Визначення пені за використання кредитних коштів <br>
+                ToString <br>
+    </h4>
+
+    <script>
+
+        class Client {
+            constructor(ID, fullName, balance) {
+                this.ID = ID
+                this.fullName = fullName
+                this.balance = balance
+            }
+
+            // Метод додавання грошей
+            deposit(amount) {
+                this.balance += amount
+            }
+
+            // Метод зняття грошей
+            withdraw(amount) {
+                if (amount <= this.balance) {
+                    this.balance -= amount
+                } else {
+                    console.log("Недостатньо коштів на рахунку")
+                }
+            }
+
+            // Метод ToString
+            toString() {
+                return `ID: ${this.ID}, ПІБ: ${this.fullName}, Баланс: ${this.balance}`
+            }
+        }
+
+        // Клас GoldenClient успадковує властивості і методи класу Client
+        class GoldenClient extends Client {
+            constructor(ID, fullName, balance, creditLimit, interestRate) {
+                super(ID, fullName, balance)
+                this.creditLimit = creditLimit
+                this.interestRate = interestRate
+            }
+
+            // Метод визначення пені за використання кредитних коштів
+            calculateInterest(amount) {
+                return (amount * this.interestRate) / 100
+            }
+
+            // Перевизначений метод ToString
+            toString() {
+                return `${super.toString()}, Ліміт кредиту: ${this.creditLimit}, Відсоток: ${this.interestRate}%`
+            }
+        }
+
+        // Створення об'єктів клієнтів
+        const client1 = new Client(1, "Іван Петров", 1000)
+        const goldenClient1 = new GoldenClient(2, "Марія Сидорова", 5000, 10000, 5)
+
+        // Виведення інформації про клієнтів на сторінці
+        document.write(`<h3>Клієнт: ${client1.toString()}</h3>`)
+        document.write(`<h3><span>Золотий клієнт:</span> ${goldenClient1.toString()}</h3>`)
+
+    </script>
+</body>
+</html>

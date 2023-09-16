@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css?family=Gabriela:regular" rel="stylesheet" />
+    <style>
+        body{
+            font-family: 'Gabriela';
+        }
+    </style>
+    <title>task-4</title>
+</head>
+<body>
+    <h3>
+        Користувач задає місяць навчання учня (перевіряти чи є числом, чи від 1 до 12, чи не канікули) та оцінку (перевіряти чи є числом, чи від 1 до 100). Вивести чи зможе він виправити оцінку (якщо оцінка погана і це не останній місяць у семестрі) . Обробку усіх помилок зробити з використанням відповідних класів.
+    </h3>
+
+    <script>
+
+        class InvalidInputError extends Error {
+            constructor(message) {
+                super(message);
+                this.name = 'InvalidInputError'
+            }
+        }
+
+        class Student {
+            constructor(month, grade) {
+                this.month = month
+                this.grade = grade
+            }
+
+            isVacationMonth() {
+                const vacationMonths = [1, 3, 11];
+                return vacationMonths.includes(this.month)
+            }
+
+            isSummerVacation() {
+                return (this.month >= 6 && this.month <= 8) || (this.month === 9 && this.grade < 60)
+            }
+
+            isValidMonth() {
+                if (
+                    isNaN(this.month) ||
+                    this.month < 1 ||
+                    this.month > 12 ||
+                    this.isVacationMonth()
+                ) {
+                    throw new InvalidInputError('Неправильно введений місяць навчання.')
+                }
+            }
+
+            isValidGrade() {
+                if (isNaN(this.grade) || this.grade < 1 || this.grade > 100) {
+                    throw new InvalidInputError('Неправильно введена оцінка.')
+                }
+            }
+
+            canImproveGrade() {
+                this.isValidMonth()
+                this.isValidGrade()
+                if (this.grade > 75) {
+                    document.write('Ви маєте добру оцінку і виправляти її не потрібно.')
+                    return false
+                } else if (
+                    (this.grade < 60 && this.month === 5) ||
+                    (this.grade < 60 && this.isSummerVacation() && this.grade >= 75)
+                ) {
+                    return false // В цих випадках не можна виправити оцінку
+                } else {
+                    return true // В інших випадках можна виправити оцінку
+                }
+            }
+        }
+
+        try {
+            const month = parseInt(prompt('Введіть місяць навчання (1-12):'))
+            const grade = parseInt(prompt('Введіть оцінку (1-100):'))
+            const student = new Student(month, grade)
+
+            if (student.canImproveGrade()) {
+                document.write('Ви можете виправити оцінку.')
+            } else {
+                document.write('Ви не можете виправити оцінку.')
+            }
+        } catch (error) {
+            if (error instanceof InvalidInputError) {
+                document.write(error.message)
+            } else {
+                document.write('Помилка: щось пішло не так.')
+            }
+        }
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css?family=Gabriela:regular" rel="stylesheet" />
+    <style>
+        body{
+            font-family: 'Gabriela';
+        }
+    </style>
+    <title>task-2</title>
+</head>
+<body>
+    <h3>
+        Створити клас Bank, у якому зберігається масив клієнтів. Виконати такі операції: <br>
+        •	Вивести усіх простих клієнтів; <br>
+        •	Вивести усіх клієнтів GoldenClient; <br>
+        •	Знати сумарну кількість грошей на рахунку;
+    </h3>
+
+    <script>
+
+        // Клас Bank
+        class Bank {
+            constructor() {
+                this.clients = []
+            }
+
+            // Метод для додавання клієнта
+            addClient(client) {
+                this.clients.push(client)
+            }
+
+            // Метод для виведення усіх простих клієнтів
+            displaySimpleClients() {
+                document.write("<h3>Прості клієнти:</h3>")
+                for (const client of this.clients) {
+                    if (!(client instanceof GoldenClient)) {
+                        document.write(`<p>${client.toString()}</p>`)
+                    }
+                }
+            }
+
+            // Метод для виведення усіх клієнтів GoldenClient
+            displayGoldenClients() {
+                document.write("<h3>Клієнти GoldenClient:</h3>")
+                for (const client of this.clients) {
+                    if (client instanceof GoldenClient) {
+                        document.write(`<p>${client.toString()}</p>`)
+                    }
+                }
+            }
+
+            // Метод для обчислення сумарної кількості грошей на рахунках
+            calculateTotalBalance() {
+                let totalBalance = 0
+                for (const client of this.clients) {
+                    totalBalance += client.balance
+                }
+                return totalBalance
+            }
+        }
+
+        class Client {
+            constructor(ID, fullName, balance) {
+                this.ID = ID
+                this.fullName = fullName
+                this.balance = balance
+            }
+
+            toString() {
+                return `ID: ${this.ID}, ПІБ: ${this.fullName}, Баланс: ${this.balance}`
+            }
+        }
+
+        // Клас GoldenClient успадковує клас Client
+        class GoldenClient extends Client {
+            constructor(ID, fullName, balance, creditLimit, interestRate) {
+                super(ID, fullName, balance)
+                this.creditLimit = creditLimit
+                this.interestRate = interestRate
+            }
+
+            toString() {
+                return `${super.toString()}, Ліміт кредиту: ${this.creditLimit}, Відсоток: ${this.interestRate}%`;
+            }
+        }
+
+        // Створення об'єкту банку
+        const bank = new Bank()
+
+        // Додавання клієнтів
+        const client1 = new Client(1, "Іван Петров", 1000)
+        const client2 = new Client(2, "Марія Сидорова", 2000)
+        const goldenClient1 = new GoldenClient(3, "Олексій Коваль", 5000, 10000, 5)
+        const goldenClient2 = new GoldenClient(4, "Андрій Бот", 7000, 10000, 5)
+
+        bank.addClient(client1)
+        bank.addClient(client2)
+        bank.addClient(goldenClient1)
+        bank.addClient(goldenClient2)
+
+        // Виведення результатів на сторінку
+        bank.displaySimpleClients()
+        bank.displayGoldenClients()
+
+        const totalBalance = bank.calculateTotalBalance()
+        document.write(`<h3>Загальний баланс усіх клієнтів: ${totalBalance}</h3>`)
+
+    </script>
+</body>
+</html>
